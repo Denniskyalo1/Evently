@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'category_data.dart';
 import 'event_model.dart';
+import 'selected_event.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,9 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (selectedCategory == 'All Events') {
       return categories.expand((category) => category.events).toList();
     } else {
-      return categories
-          .firstWhere((category) => category.name == selectedCategory)
-          .events;
+      return categories.firstWhere((category) => category.name == selectedCategory).events;
     }
   }
 
@@ -238,7 +237,6 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 //EventCardWidget
-
 class EventCardWidget extends StatelessWidget {
   final Event event;
   final double height;
@@ -342,7 +340,7 @@ class EventCardWidget extends StatelessWidget {
                 const Icon(Icons.location_on_outlined, size: 18),
                 const SizedBox(width: 5),
                 Text(
-                  event.location,
+                  event.venue,
                   style: const TextStyle(
                     fontFamily: 'Cash Light',
                     fontSize: 14,
@@ -375,7 +373,12 @@ class EventCardWidget extends StatelessWidget {
             width: double.infinity,
             height: height * 0.05,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context)=> SelectedEvent(event:event)),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.highlight,
                 shape: RoundedRectangleBorder(

@@ -28,9 +28,9 @@ class _SelectedEventState extends State<SelectedEvent> {
 
     return Scaffold(
       backgroundColor: AppColors.darkBlue,
+
       body: Stack(
         children: [
-          // Image background
           Container(
             height: height * 0.6,
             width: width,
@@ -41,7 +41,6 @@ class _SelectedEventState extends State<SelectedEvent> {
               ),
             ),
           ),
-          // Gradient overlay
           Container(
             height: height,
             width: width,
@@ -57,12 +56,12 @@ class _SelectedEventState extends State<SelectedEvent> {
               ),
             ),
           ),
-          // Positioned details widget with constrained height
+          const TopBar(),
           Positioned(
-            top: height * 0.45, // Start below the image
+            top: height * 0.45,
             left: 0,
             right: 0,
-            bottom: 0, // Constrain the bottom to allow layout
+            bottom: 0,
             child: EventDetailsWidget(
               event: widget.event,
               isExpanded: _isExpanded,
@@ -105,7 +104,7 @@ class EventDetailsWidget extends StatelessWidget {
             // Name container
             Container(
               child: Text(
-                event.title ?? 'No Title',
+                event.title,
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -188,7 +187,7 @@ class EventDetailsWidget extends StatelessWidget {
                         color: Colors.white70,
                       ),
                       Text(
-                        event.venue ?? 'No Location',
+                        event.venue,
                         style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'Cash Light',
@@ -204,7 +203,7 @@ class EventDetailsWidget extends StatelessWidget {
                         color: Colors.white70,
                       ),
                       Text(
-                        event.price ?? 'Not Available',
+                        event.price,
                         style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'Cash Light',
@@ -220,7 +219,7 @@ class EventDetailsWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            // About event with isolated scrolling including buttons
+
             Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,14 +235,14 @@ class EventDetailsWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   SizedBox(
-                    height: 155, // Fixed height for the scrollable "About" section
+                    height: 155,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            event.description ?? 'No description available',
+                            event.description,
                             style: const TextStyle(
                               fontSize: 22,
                               color: Colors.white70,
@@ -276,7 +275,6 @@ class EventDetailsWidget extends StatelessWidget {
                                   color: AppColors.highlight,
                                   fontFamily: 'Cash Light',
                                   fontWeight: FontWeight.bold,
-
                                 ),
                               ),
                             ),
@@ -289,27 +287,9 @@ class EventDetailsWidget extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             // Buy ticket Button
-            Container(
-              width: double.infinity,
-              height: height * 0.05,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.highlight,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'Buy Ticket',
-                  style: TextStyle(
-                    fontFamily: 'Cash Light',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+            CustomButton(
+                text: 'Buy Ticket',
+                onPressed:(){},
             ),
           ],
         ),

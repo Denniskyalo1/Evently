@@ -67,6 +67,10 @@ flutter:
    - assets/images/flutter_devfest.jpeg
    - assets/images/afrobeats.jpeg
    - assets/images/marathon.jpeg
+   - assets/images/signup.jpeg
+   - assets/images/login.jpeg
+   - assets/images/google.png
+   - assets/images/apple.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

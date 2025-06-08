@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppColors.darkBlue,
       body: Column(
         children: [
-
           Container(
             height: height * 0.22,
             width: width,
@@ -60,16 +59,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Row(
                       children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          height: height * 0.06,
-                          width: height * 0.06,
-                          decoration: BoxDecoration(
-                            image: const DecorationImage(
-                              image: AssetImage('assets/images/defaultpfp.png'),
-                              fit: BoxFit.contain,
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.pushNamed(context, '/login');
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            height: height * 0.06,
+                            width: height * 0.06,
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage('assets/images/defaultpfp.png'),
+                                fit: BoxFit.contain,
+                              ),
+                              borderRadius: BorderRadius.circular(40),
                             ),
-                            borderRadius: BorderRadius.circular(40),
                           ),
                         ),
                         Column(
@@ -369,32 +373,14 @@ class EventCardWidget extends StatelessWidget {
           const SizedBox(height: 10),
 
           // Read more button
-          Container(
-            width: double.infinity,
-            height: height * 0.05,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context)=> SelectedEvent(event:event)),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.highlight,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Read More',
-                style: TextStyle(
-                  fontFamily: 'Cash Light',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
+          CustomButton(
+            text: 'Read More',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SelectedEvent(event: event)),
+              );
+            },
           ),
         ],
       ),

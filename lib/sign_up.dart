@@ -1,7 +1,11 @@
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'constants.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -11,13 +15,82 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
+    void registerUser() async {
+      try{
+        if (_nameController.text.isEmpty ||
+            _usernameController.text.isEmpty ||
+            _emailController.text.isEmpty ||
+            _passwordController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please fill all fields.')),
+          );
+          return;
+        }
 
+        final url = Uri.parse('https://f8f0-102-68-79-99.ngrok-free.app/api/register');
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'username': _usernameController.text,
+            'email': _emailController.text,
+            'password': _passwordController.text,
+            'name': _nameController.text,
+            'role': 'user'
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          final responseData = jsonDecode(response.body);
+          if(!mounted) return;
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text('Registration Successful'),
+              content: Text('Check your email to verify your account before logging in.'),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () => Navigator.pushNamed(context, '/login'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          final error = jsonDecode(response.body);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${error['message'] ?? 'Something went wrong'}')),
+          );
+        }
+      }catch(e){
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    }
+
+
+    return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -53,6 +126,17 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 30),
                 TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    hintText: 'Full Name',
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(0.6),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
                     filled: true,
@@ -62,6 +146,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 16),
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     hintText: 'Email',
                     filled: true,
@@ -71,6 +156,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 16),
                 TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -80,7 +166,9 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                CustomButton(text: 'Register', onPressed: (){},),
+
+                CustomButton(text: 'Register', onPressed: registerUser,),
+
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

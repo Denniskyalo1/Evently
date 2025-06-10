@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'constants.dart';
+import 'package:http/http.dart' as http;
+
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,6 +15,74 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose(){
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> loginUser() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill in all fields")),
+      );
+      return;
+    }
+
+    final url = Uri.parse('https://f8f0-102-68-79-99.ngrok-free.app/api/login');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'username': username,
+          'password': password,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        final token = data['token'];
+
+        if(!mounted) return;
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            content: Text('Login Successful!'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () =>Navigator.pushReplacementNamed(context, '/home'),
+              ),
+            ],
+          ),
+        );
+
+
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Login failed')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -50,6 +122,7 @@ class _LoginState extends State<Login> {
                 ),
                 const SizedBox(height: 30),
                 TextField(
+                  controller: usernameController,
                   decoration: InputDecoration(
                     hintText: 'Username',
                     filled: true,
@@ -59,6 +132,7 @@ class _LoginState extends State<Login> {
                 ),
                 const SizedBox(height: 16),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -68,7 +142,7 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                CustomButton(text: 'Login', onPressed: (){},),
+                CustomButton(text: 'Login', onPressed: loginUser,),
                 const SizedBox(height: 24),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,13 +30,12 @@ class _SplashScreenState extends State<SplashScreen> {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
             child: Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha:0.3),
               child: Center(
                 child:Text(
                 'Evently',
-                style: TextStyle(
-                  fontSize: 60,
-                  fontFamily: 'Groovetastic',
+                style: GoogleFonts.roboto(
+                 fontSize:60,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),

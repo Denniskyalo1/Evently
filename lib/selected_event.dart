@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'constants.dart';
 import 'category_data.dart';
 import 'event_model.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class SelectedEvent extends StatefulWidget {
   final Event event;
@@ -105,11 +107,10 @@ class EventDetailsWidget extends StatelessWidget {
             Container(
               child: Text(
                 event.title,
-                style: const TextStyle(
+                style: GoogleFonts.lexend(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 50,
-                  fontFamily: 'Cash Light',
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -123,30 +124,27 @@ class EventDetailsWidget extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children:  [
                       Text(
                         'Date:',
-                        style: TextStyle(
+                        style: GoogleFonts.lexend(
                           color: Colors.white,
-                          fontFamily: 'Cash Light',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         'Location:',
-                        style: TextStyle(
+                        style: GoogleFonts.lexend(
                           color: Colors.white,
-                          fontFamily: 'Cash Light',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         'Price:',
-                        style: TextStyle(
+                        style: GoogleFonts.lexend(
                           color: Colors.white,
-                          fontFamily: 'Cash Light',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -163,20 +161,20 @@ class EventDetailsWidget extends StatelessWidget {
                         children: [
                           Text(
                             DateFormat('EEEE').format(event.dateTime),
-                            style: const TextStyle(
+                            style: GoogleFonts.barlowSemiCondensed(
                               color: Colors.white,
-                              fontFamily: 'Cash Light',
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+
                             ),
                           ),
                           Text(
                             DateFormat('dd MMM yyyy').format(event.dateTime),
-                            style: const TextStyle(
+                            style: GoogleFonts.barlowSemiCondensed(
                               color: Colors.white,
-                              fontFamily: 'Cash Light',
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+
                             ),
                           ),
                         ],
@@ -188,11 +186,11 @@ class EventDetailsWidget extends StatelessWidget {
                       ),
                       Text(
                         event.venue,
-                        style: const TextStyle(
+                        style: GoogleFonts.barlowSemiCondensed(
                           color: Colors.white,
-                          fontFamily: 'Cash Light',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -201,12 +199,12 @@ class EventDetailsWidget extends StatelessWidget {
                         height: 50,
                         width: 1,
                         color: Colors.white70,
+
                       ),
                       Text(
                         event.price,
-                        style: const TextStyle(
+                        style: GoogleFonts.barlowSemiCondensed(
                           color: Colors.white,
-                          fontFamily: 'Cash Light',
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -226,10 +224,9 @@ class EventDetailsWidget extends StatelessWidget {
                 children: [
                   Text(
                     'About',
-                    style: TextStyle(
+                    style: GoogleFonts.lexend(
                       fontSize: 35,
                       color: Colors.white,
-                      fontFamily: 'Cash Light',
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -259,7 +256,7 @@ class EventDetailsWidget extends StatelessWidget {
                                 'Read more',
                                 style: TextStyle(
                                   fontSize: 20,
-                                  color: AppColors.highlight,
+                                  color: const Color(0xFFEB1555) ,
                                   fontFamily: 'Cash Light',
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -272,7 +269,7 @@ class EventDetailsWidget extends StatelessWidget {
                                 'Read less',
                                 style: TextStyle(
                                   fontSize: 20,
-                                  color: AppColors.highlight,
+                                  color: const Color(0xFFEB1555),
                                   fontFamily: 'Cash Light',
                                   fontWeight: FontWeight.bold,
                                 ),

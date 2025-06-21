@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'authservice.dart';
 
 
 class SignUp extends StatefulWidget {
@@ -46,7 +47,27 @@ class _SignUpState extends State<SignUp> {
           return;
         }
 
-        final url = Uri.parse('https://f8f0-102-68-79-99.ngrok-free.app/api/register');
+        if(!mounted) return;
+        if (_usernameController.text.length < 4) {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: Text('Invalid username'),
+              content: Text('Username must be at least 4 characters long'),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () =>Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+          return;
+        }
+
+        final url = Uri.parse('https://c266-102-68-79-99.ngrok-free.app/api/register');
+
+
         final response = await http.post(
           url,
           headers: {'Content-Type': 'application/json'},
@@ -61,6 +82,12 @@ class _SignUpState extends State<SignUp> {
 
         if (response.statusCode == 201) {
           final responseData = jsonDecode(response.body);
+          final token = responseData['token'];
+          final user = responseData['user'];
+
+          await AuthService.saveToken(token);
+          await AuthService.saveUser(user);
+
           if(!mounted) return;
           showDialog(
             context: context,
@@ -75,7 +102,8 @@ class _SignUpState extends State<SignUp> {
               ],
             ),
           );
-        } else {
+          return;
+        }else{
           final error = jsonDecode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${error['message'] ?? 'Something went wrong'}')),
@@ -215,7 +243,7 @@ class _SignUpState extends State<SignUp> {
                   ]
                 ),
                 const SizedBox(height: 40,),
-            Container(
+            /*Container(
               width: double.infinity,
               height: height * 0.06,
               child: ElevatedButton(
@@ -274,7 +302,7 @@ class _SignUpState extends State<SignUp> {
                         ]
                     ),
                   ),
-                ),
+                ),*/
 
 
               ],

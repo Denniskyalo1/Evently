@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'category_data.dart';
 import 'event_model.dart';
 import 'selected_event.dart';
+import 'authservice.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late List<String> categoryNames;
   String? selectedCategory;
+  String? userName;
 
   @override
   void initState() {
@@ -22,33 +24,52 @@ class _HomeScreenState extends State<HomeScreen> {
     categories.map((category) => category.name).toSet().toList();
     categoryNames = ['All Events', ...uniqueCategoryNames];
     selectedCategory = 'All Events';
+
+    loadUser();
+  }
+
+  Future<void> loadUser() async {
+    final user = await AuthService.getUser();
+    setState(() {
+      userName = user?['username'] ?? '';
+    });
   }
 
   List<Event> get filteredEvents {
     if (selectedCategory == 'All Events') {
       return categories.expand((category) => category.events).toList();
     } else {
-      return categories.firstWhere((category) => category.name == selectedCategory).events;
+      return categories
+          .firstWhere((category) => category.name == selectedCategory)
+          .events;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = theme.textTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
 
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Column(
         children: [
           Container(
-            height: height * 0.22,
+            height: height * 0.225,
             width: width,
-            decoration: const BoxDecoration(
-              color: AppColors.lightdarkBlue,
-              borderRadius: BorderRadius.vertical(
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
                 bottom: Radius.circular(25),
               ),
+              border: Border.all(
+                 color: colorScheme.outline,
+              )
             ),
             padding: const EdgeInsets.all(25),
             child: Column(
@@ -60,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             Navigator.pushNamed(context, '/login');
                           },
                           child: Container(
@@ -70,40 +91,74 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: BoxDecoration(
                               image: const DecorationImage(
                                 image: AssetImage('assets/images/defaultpfp.png'),
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(40),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
-                              'Location',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Cash Light',
-                                fontSize: 18,
+                              'Welcome,',
+                              style: GoogleFonts.roboto().copyWith(
+                                color: colorScheme.onSurface,
+                                fontWeight:FontWeight.bold,
+                                fontSize: 25,
                               ),
                             ),
                             Text(
-                              'Nairobi, KE',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Cash Light',
-                                fontSize: 25,
+                              userName ?? '',
+                              style:GoogleFonts.roboto().copyWith(
+                                color: colorScheme.onSurface,
                                 fontWeight: FontWeight.bold,
+                                fontSize: 20
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    const Icon(
-                      Icons.menu_sharp,
-                      size: 30,
-                      color: Colors.white70,
+                    PopupMenuButton(
+                      iconColor: colorScheme.onSurface,
+                      iconSize: 30,
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Row(
+                            children: const [
+                              Icon(Icons.person),
+                              SizedBox(width: 10),
+                              Text('Profile'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          child: Row(
+                            children: const [
+                              Icon(Icons.brightness_4_outlined),
+                              SizedBox(width: 10),
+                              Text('Theme'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          child: Row(
+                            children: const [
+                              Icon(Icons.logout_outlined),
+                              SizedBox(width: 10),
+                              Text('Logout'),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -116,19 +171,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: width * 0.7,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white70, width: 2),
+                        border: Border.all(color: colorScheme.onSurface,),
                       ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Row(
-                        children: const [
-                          SizedBox(width: 10),
-                          Icon(Icons.search, color: Colors.white70),
-                          SizedBox(width: 10),
+                        children: [
+                          Icon(Icons.search, color: colorScheme.onSurface),
+                          const SizedBox(width: 10),
                           Text(
                             'Search event',
-                            style: TextStyle(
-                              fontFamily: 'Cash Light',
-                              fontSize: 22,
-                              color: Colors.white,
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -140,25 +193,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.white70, width: 2),
+                        border: Border.all(color: colorScheme.onSurface),
                       ),
-                      child: const Icon(
-                        Icons.calendar_month,
-                        color: Colors.white70,
-                      ),
+                      child: Icon(Icons.calendar_month, color: colorScheme.onSurface),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-
-          // Scrollable content
           Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Horizontal category list
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 20),
                     height: height * 0.05,
@@ -178,20 +225,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             alignment: Alignment.center,
                             margin: const EdgeInsets.only(right: 10),
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            width:width * 0.27,
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? AppColors.highlight
-                                  : Colors.transparent,
-                              border: Border.all(color: Colors.white70, width: 1.5),
-                              borderRadius: BorderRadius.circular(10),
+                                  ? (isDark ? Colors.white : Colors.black)
+                                  : (isDark ? colorScheme.surface : Colors.white),
+                              border: Border.all(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               name,
-                              style: const TextStyle(
-                                fontFamily: 'Cash Light',
-                                fontSize: 20,
-                                color: Colors.white,
+                              style: GoogleFonts.roboto().copyWith(
+                                color: isSelected
+                                    ? (isDark ? Colors.black : Colors.white)
+                                    : (isDark ? Colors.white : Colors.black),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
                               ),
                             ),
                           ),
@@ -199,35 +251,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
-
-                  // Section title
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     alignment: Alignment.centerLeft,
-                    child: const Text(
+                    child: Text(
                       'Upcoming Events',
-                      style: TextStyle(
-                        fontFamily: 'Cash Light',
-                        fontSize: 27,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
+                      style: GoogleFonts.roboto().copyWith(
+                        color: colorScheme.onSurface,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
-
-                  // Event list
                   Column(
                     children: filteredEvents
-                        .map(
-                          (event) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: EventCardWidget(
-                          event: event,
-                          height: height,
-                          width: width,
-                        ),
+                        .map((event) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: EventCardWidget(
+                        event: event,
+                        height: height,
+                        width: width,
                       ),
-                    )
+                    ))
                         .toList(),
                   ),
                 ],
@@ -240,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-//EventCardWidget
+// EventCardWidget
 class EventCardWidget extends StatelessWidget {
   final Event event;
   final double height;
@@ -255,19 +300,34 @@ class EventCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+
     return Container(
       height: height * 0.45,
       width: width,
       margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: colorScheme.outline,
+          width: 2,
+        ),
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image + date
           Stack(
             children: [
               Container(
@@ -289,26 +349,21 @@ class EventCardWidget extends StatelessWidget {
                   width: 60,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         event.dateTime.day.toString(),
-                        style: const TextStyle(
-                          fontFamily: 'Cash Light',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                        style: GoogleFonts.roboto().copyWith(
+                            color:textTheme.bodyMedium?.color,
+                            fontWeight: FontWeight.w800,
                         ),
                       ),
                       Text(
                         _monthString(event.dateTime.month),
-                        style: const TextStyle(
-                          fontFamily: 'Cash Light',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
+                        style: textTheme.bodyLarge,
                       ),
                     ],
                   ),
@@ -317,70 +372,56 @@ class EventCardWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-
-          // Event title (1 line)
-          Container(
-            margin: const EdgeInsets.only(left: 10),
-            child: Text(
-              event.title.toUpperCase(),
-              style: const TextStyle(
-                fontFamily: 'Cash Light',
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+          Text(
+            event.title.toUpperCase(),
+            style: GoogleFonts.roboto().copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+              fontSize: 30
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-
-          const SizedBox(height: 5),
-
-          // Location
-          Container(
-            margin: const EdgeInsets.only(left: 10),
-            child: Row(
-              children: [
-                const Icon(Icons.location_on_outlined, size: 18),
-                const SizedBox(width: 5),
-                Text(
-                  event.venue,
-                  style: const TextStyle(
-                    fontFamily: 'Cash Light',
-                    fontSize: 14,
-                    color: Colors.black,
-                  ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Icon(Icons.location_on_outlined, size: 18, color: colorScheme.onSurface),
+              const SizedBox(width: 6),
+              Text(
+                event.venue,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 5),
-
-          // Price
-          Container(
-            margin: const EdgeInsets.only(left: 10),
-            child: Text(
-              event.price,
-              style: const TextStyle(
-                fontFamily: 'Cash Light',
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
               ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            event.price,
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface,
             ),
           ),
-
-          const SizedBox(height: 10),
-
-          // Read more button
-          CustomButton(
-            text: 'Read More',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SelectedEvent(event: event)),
-              );
-            },
+          const Spacer(),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SelectedEvent(event: event)),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Read More'),
+            ),
           ),
         ],
       ),

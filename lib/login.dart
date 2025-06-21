@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 class Login extends StatefulWidget {
@@ -17,6 +18,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final storage = FlutterSecureStorage();
 
   @override
   void dispose(){
@@ -36,7 +38,7 @@ class _LoginState extends State<Login> {
       return;
     }
 
-    final url = Uri.parse('https://f8f0-102-68-79-99.ngrok-free.app/api/login');
+    final url = Uri.parse('https://c266-102-68-79-99.ngrok-free.app/api/login');
 
     try {
       final response = await http.post(
@@ -55,12 +57,17 @@ class _LoginState extends State<Login> {
 
       if (response.statusCode == 200) {
         final token = data['token'];
+        final user = data['user'];
+
+        await storage.write(key: 'authToken', value: token);
+        await storage.write(key: 'userData', value: jsonEncode(user));
 
         if(!mounted) return;
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            content: Text('Login Successful!'),
+            title: Text('Login Successful'),
+            content: Text('Login successful, click ok to continue!'),
             actions: [
               TextButton(
                 child: Text('OK'),
@@ -69,9 +76,24 @@ class _LoginState extends State<Login> {
             ],
           ),
         );
+        return;
 
-
-      } else {
+      }else if(response.statusCode == 403){
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: Text("Email Not Verified"),
+            content: Text('Please verify your email!'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['message'] ?? 'Login failed')),
         );
@@ -189,7 +211,7 @@ class _LoginState extends State<Login> {
                     ]
                 ),
                 const SizedBox(height: 40,),
-                Container(
+               /* Container(
                   width: double.infinity,
                   height: height * 0.06,
                   child: ElevatedButton(
@@ -217,10 +239,10 @@ class _LoginState extends State<Login> {
                         ]
                     ),
                   ),
-                ),
+                ),*/
                 SizedBox(height: 20,),
 
-                Container(
+               /* Container(
                   width: double.infinity,
                   height: height * 0.06,
                   child: ElevatedButton(
@@ -248,7 +270,7 @@ class _LoginState extends State<Login> {
                         ]
                     ),
                   ),
-                ),
+                ),*/
 
 
               ],

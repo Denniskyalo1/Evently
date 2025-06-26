@@ -6,6 +6,8 @@ import 'dart:ui';
 import 'constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 
 class Login extends StatefulWidget {
@@ -94,6 +96,7 @@ class _LoginState extends State<Login> {
           ),
         );
       }else {
+        if(!mounted){return;}
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['message'] ?? 'Login failed')),
         );
@@ -109,6 +112,9 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     return Scaffold(
       body: Stack(
@@ -148,7 +154,7 @@ class _LoginState extends State<Login> {
                   decoration: InputDecoration(
                     hintText: 'Username',
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.6),
+                    fillColor: Colors.white,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -159,7 +165,7 @@ class _LoginState extends State<Login> {
                   decoration: InputDecoration(
                     hintText: 'Password',
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.6),
+                    fillColor: Colors.white,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -167,48 +173,45 @@ class _LoginState extends State<Login> {
                 CustomButton(text: 'Login', onPressed: loginUser,),
                 const SizedBox(height: 24),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        height: 2,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      height: 2,
+                      width: 60,
+                      color: colorScheme.onPrimary,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        text: "Don't have an account?",
+                        style: GoogleFonts.roboto().copyWith(
+                          color: colorScheme.onPrimary,
+                          fontWeight:FontWeight.bold,
+                          fontSize: 17,
                         ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                            text: "Don't have an account?",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontFamily: 'Cash Light',
+                        children: [
+                          TextSpan(
+                            text: 'Register',
+                            style: GoogleFonts.roboto().copyWith(
+                              color: colorScheme.primary,
+                              fontWeight:FontWeight.bold,
+                              fontSize: 17,
+                              decoration: TextDecoration.underline,
                             ),
-                            children: [
-                              TextSpan(
-                                text: 'Register',
-                                style: TextStyle(
-                                  color: AppColors.highlight,
-                                  fontWeight: FontWeight.bold,
-                                  decoration:TextDecoration.underline,
-                                  decorationColor: AppColors.highlight,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = (){
-                                    Navigator.pushNamed(context, '/signUp');
-                                  },
-                              ),
-                            ]
-                        ),
+
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+                          ),
+                        ],
                       ),
-                      Container(
-                        height: 2,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ]
+                    ),
+                    Container(
+                      height: 2,
+                      width: 60,
+                      color: colorScheme.onPrimary,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 40,),
                /* Container(

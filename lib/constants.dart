@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   static const Color darkBlue = Color.fromARGB(255, 5, 2, 28);
@@ -31,6 +32,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
+
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -44,28 +46,32 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return Container(
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return SizedBox(
       width: double.infinity,
       height: height * 0.05,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFEB1555),
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontFamily: 'Cash Light',
+          style: GoogleFonts.roboto().copyWith(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: colorScheme.onPrimary,
           ),
         ),
       ),
     );
   }
 }
+
 

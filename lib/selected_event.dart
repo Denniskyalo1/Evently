@@ -4,7 +4,7 @@ import 'constants.dart';
 import 'category_data.dart';
 import 'event_model.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'buyticket.dart';
 
 class SelectedEvent extends StatefulWidget {
   final Event event;
@@ -25,12 +25,13 @@ class _SelectedEventState extends State<SelectedEvent> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-
+      backgroundColor: colorScheme.background,
       body: Stack(
         children: [
           Container(
@@ -49,12 +50,12 @@ class _SelectedEventState extends State<SelectedEvent> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.darkBlue,
+                  colorScheme.background,
                   Colors.transparent,
                 ],
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                stops: [0.4, 1],
+                stops: const [0.4, 1],
               ),
             ),
           ),
@@ -90,8 +91,10 @@ class EventDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -99,194 +102,171 @@ class EventDetailsWidget extends StatelessWidget {
         width: width,
         padding: const EdgeInsets.all(15),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            // Name container
-            Container(
-              child: Text(
-                event.title,
-                style: GoogleFonts.lexend(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            Text(
+              event.title,
+              style: GoogleFonts.roboto(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+                fontSize: 50,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 10),
-            // Date, Location, and Price container
-            Container(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:  [
-                      Text(
-                        'Date:',
-                        style: GoogleFonts.lexend(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Location:',
-                        style: GoogleFonts.lexend(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        'Price:',
-                        style: GoogleFonts.lexend(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            DateFormat('EEEE').format(event.dateTime),
-                            style: GoogleFonts.barlowSemiCondensed(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
 
-                            ),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Date:',
+                        style: GoogleFonts.roboto(
+                          color: colorScheme.onSurface,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    Text('Location:',
+                        style: GoogleFonts.roboto(
+                          color: colorScheme.onSurface,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    Text('Price:',
+                        style: GoogleFonts.roboto(
+                          color: colorScheme.onSurface,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          DateFormat('EEEE').format(event.dateTime),
+                          style: GoogleFonts.roboto(
+                            color: colorScheme.onSurface,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            DateFormat('dd MMM yyyy').format(event.dateTime),
-                            style: GoogleFonts.barlowSemiCondensed(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-
-                            ),
+                        ),
+                        Text(
+                          DateFormat('dd MMM yyyy').format(event.dateTime),
+                          style: GoogleFonts.roboto(
+                            color: colorScheme.onSurface,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                      Container(
-                        height: 50,
-                        width: 1,
-                        color: Colors.white70,
-                      ),
-                      Text(
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin:EdgeInsets.only(left: 20, right: 10),
+                      height: 50,
+                      width: 1,
+                      color: colorScheme.outline,
+                    ),
+                    Expanded(
+                      child: Text(
                         event.venue,
-                        style: GoogleFonts.barlowSemiCondensed(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Container(
-                        height: 50,
-                        width: 1,
-                        color: Colors.white70,
-
-                      ),
-                      Text(
-                        event.price,
-                        style: GoogleFonts.barlowSemiCondensed(
-                          color: Colors.white,
+                        style: GoogleFonts.roboto(
+                          color: colorScheme.onSurface,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                    Container(
+                      margin:EdgeInsets.only(left: 10, right: 20),
+                      height: 50,
+                      width: 1,
+                      color: colorScheme.outline,
+                    ),
+                    Text(
+                      event.price,
+                      style: GoogleFonts.roboto(
+                        color: colorScheme.onSurface,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ],
             ),
             const SizedBox(height: 30),
 
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'About',
-                    style: GoogleFonts.lexend(
-                      fontSize: 35,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'About',
+                  style: GoogleFonts.roboto(
+                    fontSize: 35,
+                    color: colorScheme.onBackground,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 155,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            event.description,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              color: Colors.white70,
-                              fontFamily: 'Cash Light',
-                            ),
-                            maxLines: isExpanded ? null : 3,
-                            overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 155,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          event.description,
+                          style: GoogleFonts.roboto(
+                            fontSize: 22,
+                            color: colorScheme.onBackground.withOpacity(0.7),
                           ),
-                          const SizedBox(height: 8),
-                          if (!isExpanded)
-                            GestureDetector(
-                              onTap: toggleExpand,
-                              child: const Text(
-                                'Read more',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: const Color(0xFFEB1555) ,
-                                  fontFamily: 'Cash Light',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          maxLines: isExpanded ? null : 3,
+                          overflow: isExpanded
+                              ? TextOverflow.visible
+                              : TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: toggleExpand,
+                          child: Text(
+                            isExpanded ? 'Read less' : 'Read more',
+                            style: GoogleFonts.roboto(
+                              fontSize: 20,
+                              color: colorScheme.primary,
+                              fontWeight: FontWeight.bold,
                             ),
-                          if (isExpanded)
-                            GestureDetector(
-                              onTap: toggleExpand,
-                              child: const Text(
-                                'Read less',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: const Color(0xFFEB1555),
-                                  fontFamily: 'Cash Light',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
-            // Buy ticket Button
+
             CustomButton(
-                text: 'Buy Ticket',
-                onPressed:(){},
+              text: 'Buy Ticket',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BuyTicket(event: event),
+                  ),
+                );
+              },
             ),
           ],
         ),

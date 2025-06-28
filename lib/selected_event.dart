@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'constants.dart';
-import 'category_data.dart';
 import 'event_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'buyticket.dart';
@@ -31,7 +30,7 @@ class _SelectedEventState extends State<SelectedEvent> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
           Container(
@@ -50,7 +49,7 @@ class _SelectedEventState extends State<SelectedEvent> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  colorScheme.background,
+                  colorScheme.surface,
                   Colors.transparent,
                 ],
                 begin: Alignment.bottomCenter,
@@ -91,7 +90,6 @@ class EventDetailsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -214,7 +212,7 @@ class EventDetailsWidget extends StatelessWidget {
                   'About',
                   style: GoogleFonts.roboto(
                     fontSize: 35,
-                    color: colorScheme.onBackground,
+                    color: colorScheme.onSurface,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -230,7 +228,7 @@ class EventDetailsWidget extends StatelessWidget {
                           event.description,
                           style: GoogleFonts.roboto(
                             fontSize: 22,
-                            color: colorScheme.onBackground.withOpacity(0.7),
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                           maxLines: isExpanded ? null : 3,
                           overflow: isExpanded

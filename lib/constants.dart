@@ -15,14 +15,16 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 35),
+        icon: Icon(Icons.arrow_back, color: colorScheme.onSurface, size: 35),
         onPressed: onBackPressed ?? () {
-          print('Back button clicked');
-          Navigator.pop(context); // Default behavior
+          Navigator.pop(context);
         },
       ),
     );
@@ -47,7 +49,6 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: double.infinity,

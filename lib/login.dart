@@ -111,10 +111,8 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
 
     return Scaffold(
       body: Stack(
@@ -128,7 +126,7 @@ class _LoginState extends State<Login> {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              color: Colors.transparent.withOpacity(0),
+              color: Colors.transparent.withValues(alpha:0),
             ),
 
           ),
@@ -141,11 +139,10 @@ class _LoginState extends State<Login> {
                 SizedBox(height: height * 0.1),
                 Text(
                   'Log In',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Groovetastic',
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.roboto(
+                    color: colorScheme.onPrimary,
                     fontSize: 60,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 30),

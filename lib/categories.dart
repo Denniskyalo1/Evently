@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'event_model.dart';
 
 class Category{

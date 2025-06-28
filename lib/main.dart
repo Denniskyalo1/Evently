@@ -5,7 +5,7 @@ import 'sign_up.dart';
 import 'login.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 // Light Theme
@@ -56,8 +56,21 @@ final ThemeData darkTheme = ThemeData(
   ),
 );
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +78,11 @@ class MyApp extends StatelessWidget {
       title: 'Event Management App',
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.light,
+      themeMode: _themeMode,
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      home: SplashScreen(toggleTheme: toggleTheme),
       routes: {
-        '/home': (context) => const HomeScreen(),
+        '/home': (context) => HomeScreen(toggleTheme: toggleTheme),
         '/signUp': (context) => const SignUp(),
         '/login': (context) => const Login(),
       },

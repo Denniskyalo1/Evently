@@ -99,6 +99,7 @@ class _SignUpState extends State<SignUp> {
         return;
       } else {
         final error = jsonDecode(response.body);
+        if(!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${error['message'] ?? 'Something went wrong'}')),
         );
@@ -114,7 +115,6 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -131,7 +131,7 @@ class _SignUpState extends State<SignUp> {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              color: colorScheme.background.withOpacity(0.1),
+              color: colorScheme.surface.withValues(alpha:0.1),
             ),
           ),
           SingleChildScrollView(
@@ -142,11 +142,10 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(height: height * 0.1),
                 Text(
                   'Sign Up',
-                  style: textTheme.displaySmall?.copyWith(
+                  style: GoogleFonts.roboto(
                     color: colorScheme.onPrimary,
-                    fontFamily: 'Groovetastic',
-                    fontWeight: FontWeight.bold,
                     fontSize: 60,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 30),

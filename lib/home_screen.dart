@@ -6,7 +6,8 @@ import 'selected_event.dart';
 import 'authservice.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback toggleTheme;
+  const HomeScreen({super.key,required this.toggleTheme} );
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               borderRadius: BorderRadius.circular(40),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0),
                                   blurRadius: 6,
                                   offset: const Offset(0, 4),
                                 ),
@@ -130,8 +131,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     PopupMenuButton(
                       iconColor: colorScheme.onSurface,
                       iconSize: 30,
+                      onSelected: (value) {
+                        if (value == 'theme') {
+                          widget.toggleTheme();
+                        } else if (value == 'logout') {
+                          //logout
+                        } else if (value == 'profile') {
+                          //go to profile
+                        }
+                      },
                       itemBuilder: (context) => [
                         PopupMenuItem(
+                          value: 'profile',
                           child: Row(
                             children: const [
                               Icon(Icons.person),
@@ -141,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         PopupMenuItem(
+                          value: 'theme',
                           child: Row(
                             children: const [
                               Icon(Icons.brightness_4_outlined),
@@ -150,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         PopupMenuItem(
+                          value: 'logout',
                           child: Row(
                             children: const [
                               Icon(Icons.logout_outlined),
@@ -357,13 +370,16 @@ class EventCardWidget extends StatelessWidget {
                       Text(
                         event.dateTime.day.toString(),
                         style: GoogleFonts.roboto().copyWith(
-                            color:textTheme.bodyMedium?.color,
+                            color:Colors.black,
                             fontWeight: FontWeight.w800,
                         ),
                       ),
                       Text(
                         _monthString(event.dateTime.month),
-                        style: textTheme.bodyLarge,
+                        style: GoogleFonts.roboto().copyWith(
+                          color:Colors.black,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                     ],
                   ),

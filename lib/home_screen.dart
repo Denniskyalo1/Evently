@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'category_data.dart';
 import 'event_model.dart';
@@ -30,10 +31,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> loadUser() async {
+    final storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'authToken');
+
+    if (token == null) return;
+
     final user = await AuthService.getUser();
     setState(() {
       userName = user?['username'] ?? '';
     });
+
   }
 
   List<Event> get filteredEvents {
@@ -131,11 +138,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     PopupMenuButton(
                       iconColor: colorScheme.onSurface,
                       iconSize: 30,
-                      onSelected: (value) {
+                      onSelected: (value) async {
                         if (value == 'theme') {
                           widget.toggleTheme();
                         } else if (value == 'logout') {
-                          //logout
+                          showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Confirm Logout'),
+      content: const Text('Are you sure you want to log out?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () async {
+            Navigator.of(context).pop();
+
+            final storage = FlutterSecureStorage();
+            await storage.delete(key: 'authToken');
+
+            if (!context.mounted) return;
+
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          },
+          child: const Text('Logout'),
+        ),
+      ],
+    ),
+  );
                         } else if (value == 'profile') {
                           //go to profile
                         }

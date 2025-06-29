@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
       return;
     }
 
-    final url = Uri.parse('https://c266-102-68-79-99.ngrok-free.app/api/login');
+    final url = Uri.parse('https://b78d-102-68-79-99.ngrok-free.app /api/login');
 
     try {
       final response = await http.post(
@@ -149,9 +149,8 @@ class _LoginState extends State<Login> {
                 TextField(
                   controller: usernameController,
                   decoration: InputDecoration(
+                    labelText: 'Username',
                     hintText: 'Username',
-                    filled: true,
-                    fillColor: Colors.white,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -160,9 +159,8 @@ class _LoginState extends State<Login> {
                   controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
+                    labelText: 'Password',
                     hintText: 'Password',
-                    filled: true,
-                    fillColor: Colors.white,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -197,7 +195,7 @@ class _LoginState extends State<Login> {
 
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context, '/login');
+                                Navigator.pushNamed(context, '/signUp');
                               },
                           ),
                         ],

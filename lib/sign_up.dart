@@ -60,7 +60,7 @@ class _SignUpState extends State<SignUp> {
         return;
       }
 
-      final url = Uri.parse('https://c266-102-68-79-99.ngrok-free.app/api/register');
+      final url = Uri.parse('https://a456-102-68-79-99.ngrok-free.app/api/register');
 
       final response = await http.post(
         url,
@@ -152,10 +152,9 @@ class _SignUpState extends State<SignUp> {
                 TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
+                    labelText: 'Full Name',
                     hintText: 'Full Name',
                     hintStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
-                    filled: true,
-                    fillColor: colorScheme.surface,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -163,10 +162,9 @@ class _SignUpState extends State<SignUp> {
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
+                    labelText: 'Username',
                     hintText: 'Username',
                     hintStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
-                    filled: true,
-                    fillColor: colorScheme.surface,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -174,10 +172,9 @@ class _SignUpState extends State<SignUp> {
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
+                    labelText: 'Email',
                     hintText: 'Email',
                     hintStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
-                    filled: true,
-                    fillColor: colorScheme.surface,
                     border: const OutlineInputBorder(),
                   ),
                 ),
@@ -186,10 +183,9 @@ class _SignUpState extends State<SignUp> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
+                    labelText: 'Password',
                     hintText: 'Password',
                     hintStyle: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
-                    filled: true,
-                    fillColor: colorScheme.surface,
                     border: const OutlineInputBorder(),
                   ),
                 ),

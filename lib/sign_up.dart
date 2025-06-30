@@ -60,7 +60,7 @@ class _SignUpState extends State<SignUp> {
         return;
       }
 
-      final url = Uri.parse('https://a456-102-68-79-99.ngrok-free.app/api/register');
+      final url = Uri.parse('https://56f5-102-68-79-99.ngrok-free.app/api/register');
 
       final response = await http.post(
         url,

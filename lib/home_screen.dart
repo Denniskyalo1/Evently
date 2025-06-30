@@ -1,10 +1,11 @@
+import 'dart:convert';
+import 'package:event_management/selected_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
-import 'category_data.dart';
-import 'event_model.dart';
-import 'selected_event.dart';
 import 'authservice.dart';
+import 'event_model.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -15,18 +16,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late List<String> categoryNames;
-  String? selectedCategory;
+  List<Event> allEvents = [];
+  List<String> categoryNames = [];
+  String selectedCategory = 'All Events';
+  bool isLoading = true;
   String? userName;
 
   @override
   void initState() {
     super.initState();
-    final uniqueCategoryNames =
-    categories.map((category) => category.name).toSet().toList();
-    categoryNames = ['All Events', ...uniqueCategoryNames];
-    selectedCategory = 'All Events';
-
+    fetchEvents();
     loadUser();
   }
 
@@ -40,19 +39,36 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       userName = user?['username'] ?? '';
     });
+  }
 
+  Future<void> fetchEvents() async {
+    final response = await http.get(Uri.parse('https://https://56f5-102-68-79-99.ngrok-free.app/api/events'));
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+      allEvents = jsonData.map((e) => Event.fromJson(e)).toList();
+
+      final categoriesSet = <String>{};
+      for (var event in allEvents) {
+        categoriesSet.add(event.categoryName);
+      }
+      setState(() {
+        categoryNames = ['All Events', ...categoriesSet];
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   List<Event> get filteredEvents {
     if (selectedCategory == 'All Events') {
-      return categories.expand((category) => category.events).toList();
+      return allEvents;
     } else {
-      return categories
-          .firstWhere((category) => category.name == selectedCategory)
-          .events;
+      return allEvents.where((e) => e.categoryName == selectedCategory).toList();
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;

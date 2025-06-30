@@ -71,7 +71,7 @@ class _BuyTicketState extends State<BuyTicket> {
     }
 
     final url = Uri.parse(
-        'https://b78d-102-68-79-99.ngrok-free.app/api/mpesa/stkpush');
+        'https://56f5-102-68-79-99.ngrok-free.app/api/mpesa/stkpush');
 
     final response = await http.post(
       url,

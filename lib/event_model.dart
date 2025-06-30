@@ -8,6 +8,7 @@ class Event{
   final DateTime dateTime;
   final String imageUrl;
   final String price;
+  final String categoryName;
 
   Event({
     required this.title,
@@ -17,7 +18,21 @@ class Event{
     required this.dateTime,
     required this.imageUrl,
     required this.price,
+    required this.categoryName,
   });
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      title: json['title'],
+      description: json['description'],
+      venue: json['venue'],
+      city: json['city'],
+      dateTime: DateTime.parse(json['dateTime']),
+      imageUrl: json['imageUrl'].toString(),
+      price: json['price'].toString(),
+      categoryName: json['category']
+    );
+  }
 }
 
 

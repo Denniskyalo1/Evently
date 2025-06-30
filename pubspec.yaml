@@ -39,6 +39,7 @@ dependencies:
   http: ^1.4.0
   google_fonts: ^6.2.1
   flutter_secure_storage: ^9.2.4
+  flutter_stripe: ^11.5.0
 
 dev_dependencies:
   flutter_test:

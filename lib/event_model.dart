@@ -1,6 +1,6 @@
+import 'constants.dart';
 
-class Event{
-
+class Event {
   final String title;
   final String description;
   final String venue;
@@ -30,9 +30,9 @@ class Event{
       dateTime: DateTime.parse(json['dateTime']),
       imageUrl: json['imageUrl'].toString(),
       price: json['price'].toString(),
-      categoryName: json['category']
+      categoryName: json['category'],
     );
   }
+
+  String get fullImageUrl => '$baseUrl/storage/$imageUrl';
 }
-
-

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'authservice.dart';
 import 'event_model.dart';
+import 'constants.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
@@ -21,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All Events';
   bool isLoading = true;
   String? userName;
+  String? authToken;
+
 
   @override
   void initState() {
@@ -37,12 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final user = await AuthService.getUser();
     setState(() {
+      authToken = token;
       userName = user?['username'] ?? '';
     });
   }
 
   Future<void> fetchEvents() async {
-    final response = await http.get(Uri.parse('https://https://56f5-102-68-79-99.ngrok-free.app/api/events'));
+    final response = await http.get(Uri.parse('$baseUrl/api/events'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
       allEvents = jsonData.map((e) => Event.fromJson(e)).toList();
@@ -106,7 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/login');
+                            if(authToken == null){
+                              Navigator.pushNamed(context, '/login');
+                            }
+                            else{
+                              Navigator.pushNamed(context, '/profile');
+                            }
                           },
                           child: Container(
                             margin: const EdgeInsets.only(right: 10),
@@ -364,6 +373,7 @@ class EventCardWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    String fullImageUrl = '$baseUrl/storage/${event.imageUrl}';
 
 
     return Container(
@@ -397,7 +407,7 @@ class EventCardWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: AssetImage(event.imageUrl),
+                    image: NetworkImage(fullImageUrl),
                     fit: BoxFit.cover,
                   ),
                 ),

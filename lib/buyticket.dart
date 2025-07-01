@@ -1,3 +1,4 @@
+import 'package:event_management/ticket.dart';
 import 'package:flutter/material.dart';
 import 'event_model.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -71,7 +72,7 @@ class _BuyTicketState extends State<BuyTicket> {
     }
 
     final url = Uri.parse(
-        'https://56f5-102-68-79-99.ngrok-free.app/api/mpesa/stkpush');
+        '$baseUrl/api/mpesa/stkpush');
 
     final response = await http.post(
       url,
@@ -96,7 +97,19 @@ class _BuyTicketState extends State<BuyTicket> {
               actions: [
                 TextButton(
                   child: Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Ticket(
+                          event: widget.event,
+                          numberOfTickets: ticketCount,
+                          status: 'Confirmed',
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -118,10 +131,23 @@ class _BuyTicketState extends State<BuyTicket> {
               actions: [
                 TextButton(
                   child: Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => Ticket(
+                          event: widget.event,
+                          numberOfTickets: ticketCount,
+                          status: 'Confirmed',
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
+
       );
       return;
     } else {
@@ -167,8 +193,9 @@ class _BuyTicketState extends State<BuyTicket> {
       final isDark = Theme
           .of(context)
           .brightness == Brightness.dark;
-      final int price = int.tryParse(
+      int pricePerTicket = int.tryParse(
           widget.event.price.replaceAll(RegExp(r'\D'), '')) ?? 0;
+      int price = pricePerTicket * ticketCount;
 
 
       return Scaffold(
@@ -205,7 +232,7 @@ class _BuyTicketState extends State<BuyTicket> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: AssetImage(widget.event.imageUrl),
+                    image: NetworkImage(widget.event.fullImageUrl),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -402,7 +429,7 @@ class _BuyTicketState extends State<BuyTicket> {
                             ),
                           ),
                           Text(
-                            'Total: Ksh ${price * ticketCount}',
+                            'Total: Ksh ${pricePerTicket * ticketCount}',
                             style: GoogleFonts.roboto(
                               color: colorScheme.primary,
                               fontSize: 18,

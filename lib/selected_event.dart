@@ -38,7 +38,7 @@ class _SelectedEventState extends State<SelectedEvent> {
             width: width,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(widget.event.imageUrl),
+                image: NetworkImage(widget.event.fullImageUrl),
                 fit: BoxFit.cover,
               ),
             ),

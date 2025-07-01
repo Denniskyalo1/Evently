@@ -1,3 +1,4 @@
+import 'package:event_management/profile.dart';
 import 'package:flutter/material.dart';
 import 'splash_screen.dart';
 import 'home_screen.dart';
@@ -85,6 +86,7 @@ class _MyAppState extends State<MyApp> {
         '/home': (context) => HomeScreen(toggleTheme: toggleTheme),
         '/signUp': (context) => const SignUp(),
         '/login': (context) => const Login(),
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'constants.dart';
 
 class Event {
+  final int id;
   final String title;
   final String description;
   final String venue;
@@ -11,6 +12,7 @@ class Event {
   final String categoryName;
 
   Event({
+    required this.id,
     required this.title,
     required this.description,
     required this.venue,
@@ -23,6 +25,7 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
+      id: json['id'],
       title: json['title'],
       description: json['description'],
       venue: json['venue'],

@@ -24,12 +24,9 @@ class Ticket extends StatefulWidget {
 class _TicketState extends State<Ticket> {
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final int price = int.tryParse(widget.event.price.replaceAll(RegExp(r'\D'), '')) ?? 0;
     final int total = price * widget.numberOfTickets;
 
@@ -146,7 +143,7 @@ class _TicketState extends State<Ticket> {
                 text: TextSpan(
                   style: GoogleFonts.roboto(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   children: [
                     const TextSpan(text: 'You can view your ticket(s) on '),

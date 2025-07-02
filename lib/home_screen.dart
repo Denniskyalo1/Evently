@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   );
                         } else if (value == 'profile') {
-                          //go to profile
+                          Navigator.of(context).pushNamed('/profile');
                         }
                       },
                       itemBuilder: (context) => [
@@ -273,79 +273,85 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    height: height * 0.05,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.only(left: 25),
-                      itemCount: categoryNames.length,
-                      itemBuilder: (context, index) {
-                        final name = categoryNames[index];
-                        final isSelected = name == selectedCategory;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedCategory = name;
-                            });
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.only(right: 10),
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            width:width * 0.27,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? (isDark ? Colors.white : Colors.black)
-                                  : (isDark ? colorScheme.surface : Colors.white),
-                              border: Border.all(
-                                color: isDark ? Colors.white : Colors.black,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              name,
-                              style: GoogleFonts.roboto().copyWith(
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await fetchEvents();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      height: height * 0.05,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(left: 25),
+                        itemCount: categoryNames.length,
+                        itemBuilder: (context, index) {
+                          final name = categoryNames[index];
+                          final isSelected = name == selectedCategory;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCategory = name;
+                              });
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              width:width * 0.27,
+                              decoration: BoxDecoration(
                                 color: isSelected
-                                    ? (isDark ? Colors.black : Colors.white)
-                                    : (isDark ? Colors.white : Colors.black),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18,
+                                    ? (isDark ? Colors.white : Colors.black)
+                                    : (isDark ? colorScheme.surface : Colors.white),
+                                border: Border.all(
+                                  color: isDark ? Colors.white : Colors.black,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                name,
+                                style: GoogleFonts.roboto().copyWith(
+                                  color: isSelected
+                                      ? (isDark ? Colors.black : Colors.white)
+                                      : (isDark ? Colors.white : Colors.black),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Upcoming Events',
-                      style: GoogleFonts.roboto().copyWith(
-                        color: colorScheme.onSurface,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  Column(
-                    children: filteredEvents
-                        .map((event) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: EventCardWidget(
-                        event: event,
-                        height: height,
-                        width: width,
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Upcoming Events',
+                        style: GoogleFonts.roboto().copyWith(
+                          color: colorScheme.onSurface,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold
+                        ),
                       ),
-                    ))
-                        .toList(),
-                  ),
-                ],
+                    ),
+                    Column(
+                      children: filteredEvents
+                          .map((event) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: EventCardWidget(
+                          event: event,
+                          height: height,
+                          width: width,
+                        ),
+                      ))
+                          .toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

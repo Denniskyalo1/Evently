@@ -1,3 +1,4 @@
+import 'package:event_management/mytickets.dart';
 import 'package:event_management/profile.dart';
 import 'package:flutter/material.dart';
 import 'splash_screen.dart';
@@ -87,6 +88,7 @@ class _MyAppState extends State<MyApp> {
         '/signUp': (context) => const SignUp(),
         '/login': (context) => const Login(),
         '/profile': (context) => const ProfilePage(),
+        '/mytickets': (context) => const MyTicketsPage(),
       },
     );
   }

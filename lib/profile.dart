@@ -80,9 +80,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final theme = Theme.of(context);
-    final isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
           icon: Icon(Icons.arrow_back, size: 35),
           color: colorScheme.onSurface,
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pushNamed('/home');
           },
         ),
         title: Text(
@@ -127,6 +124,16 @@ class _ProfilePageState extends State<ProfilePage> {
             buildProfileField('Username', username ?? 'N/A', colorScheme),
             buildProfileField('Role', role ?? 'N/A', colorScheme),
             const SizedBox(height: 30),
+
+            CustomButton(
+              text: 'My tickets',
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/mytickets');
+
+              },
+            ),
+            SizedBox(height: 20,),
+
             CustomButton(
                 text: 'Log Out',
               onPressed: () async {
@@ -135,7 +142,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.pushReplacementNamed(context, '/login');
                 }
               },
-            )
+            ),
+
           ],
         ),
       ),

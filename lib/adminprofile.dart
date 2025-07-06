@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,14 +5,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'constants.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class AdminProfile extends StatefulWidget {
+  const AdminProfile({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<AdminProfile> createState() => _AdminProfileState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _AdminProfileState extends State<AdminProfile> {
   final FlutterSecureStorage storage = const FlutterSecureStorage();
 
   String? name;
@@ -90,7 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         title: Text(
-          'My Profile',
+          'Admin Profile',
           style: GoogleFonts.roboto(
             color: colorScheme.onSurface,
             fontWeight: FontWeight.bold,
@@ -131,52 +130,29 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             SizedBox(height: 20,),
+            CustomButton(
+              text: 'Approve Events',
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/eventrequests');
 
-            RichText(
-              text: TextSpan(
-                style: GoogleFonts.roboto(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                ),
-                children: [
-                  const TextSpan(text: 'Want to add an event to our app? Do so easily through '),
-                  TextSpan(
-                    text: 'here.',
-                    style: GoogleFonts.roboto(
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.pushNamed(context, '/submitevent');
-                      },
-                  ),
-                ],
+              },
+            ),
+            SizedBox(height: 200,),
+
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: CustomButton(
+                text: 'Log Out',
+                onPressed: () async {
+                  await storage.delete(key: 'authToken');
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  }
+                },
               ),
             ),
 
-            SizedBox(height: 200,),
-
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: CustomButton(
-                    text: 'Log Out',
-                    onPressed: () async {
-                      await storage.delete(key: 'authToken');
-                      if (context.mounted) {
-                        Navigator.pushReplacementNamed(context, '/login');
-                      }
-                    },
-                  ),
-                ),
-              ],
+          ],
         ),
       ),
     );

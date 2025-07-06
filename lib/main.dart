@@ -1,10 +1,13 @@
+import 'package:event_management/adminprofile.dart';
 import 'package:event_management/mytickets.dart';
 import 'package:event_management/profile.dart';
+import 'package:event_management/submitevent.dart';
 import 'package:flutter/material.dart';
 import 'splash_screen.dart';
 import 'home_screen.dart';
 import 'sign_up.dart';
 import 'login.dart';
+import 'eventrequests.dart';
 
 void main() {
   runApp(MyApp());
@@ -88,7 +91,10 @@ class _MyAppState extends State<MyApp> {
         '/signUp': (context) => const SignUp(),
         '/login': (context) => const Login(),
         '/profile': (context) => const ProfilePage(),
+        '/adminprofile': (context) => const AdminProfile(),
         '/mytickets': (context) => const MyTicketsPage(),
+        '/submitevent' : (context) => const SubmitEventPage(),
+        '/eventrequests' : (context) => const EventRequestsPage(),
       },
     );
   }

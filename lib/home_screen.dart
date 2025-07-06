@@ -10,7 +10,7 @@ import 'constants.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
-  const HomeScreen({super.key,required this.toggleTheme} );
+  const HomeScreen({super.key, required this.toggleTheme});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   String? userName;
   String? authToken;
-
+  String? role;
 
   @override
   void initState() {
@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       authToken = token;
       userName = user?['username'] ?? '';
+      role = user?['role'];
     });
   }
 
@@ -73,295 +74,284 @@ class _HomeScreenState extends State<HomeScreen> {
       return allEvents.where((e) => e.categoryName == selectedCategory).toList();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final theme = Theme.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = theme.textTheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: Column(
-        children: [
-          Container(
-            height: height * 0.225,
-            width: width,
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(25),
-              ),
-              border: Border.all(
-                 color: colorScheme.outline,
-              )
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              height: height * 0.225,
+              width: width,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(25),
             ),
-            padding: const EdgeInsets.all(25),
-            child: Column(
-              children: [
-                const SizedBox(height: 25),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            if(authToken == null){
-                              Navigator.pushNamed(context, '/login');
-                            }
-                            else{
-                              Navigator.pushNamed(context, '/profile');
-                            }
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 10),
-                            height: height * 0.06,
-                            width: height * 0.06,
-                            decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                image: AssetImage('assets/images/defaultpfp.png'),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.circular(40),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0),
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 4),
+            border: Border(
+              bottom: BorderSide(
+                color: colorScheme.outline,
+                width: 1.5,
+              ),
+            ),
+          ),
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              if (authToken == null) {
+                                Navigator.pushNamed(context, '/login');
+                              } else {
+                                if (role == 'admin') {
+                                  Navigator.pushNamed(context, '/adminprofile');
+                                } else {
+                                  Navigator.pushNamed(context, '/profile');
+                                }
+                              }
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              height: height * 0.06,
+                              width: height * 0.06,
+                              decoration: BoxDecoration(
+                                image: const DecorationImage(
+                                  image: AssetImage('assets/images/defaultpfp.png'),
+                                  fit: BoxFit.cover,
                                 ),
+                                borderRadius: BorderRadius.circular(40),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withAlpha(0),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Welcome,',
+                                style: GoogleFonts.roboto().copyWith(
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                ),
+                              ),
+                              Text(
+                                userName ?? '',
+                                style: GoogleFonts.roboto().copyWith(
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      PopupMenuButton(
+                        iconColor: colorScheme.onSurface,
+                        iconSize: 30,
+                        onSelected: (value) async {
+                          if (value == 'theme') {
+                            widget.toggleTheme();
+                          } else if (value == 'logout') {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Confirm Logout'),
+                                content: const Text('Are you sure you want to log out?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                      final storage = FlutterSecureStorage();
+                                      await storage.delete(key: 'authToken');
+                                      if (!context.mounted) return;
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/home',
+                                            (route) => false,
+                                      );
+                                    },
+                                    child: const Text('Logout'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (value == 'profile') {
+                            Navigator.of(context).pushNamed('/profile');
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'profile',
+                            child: Row(
+                              children: const [
+                                Icon(Icons.person),
+                                SizedBox(width: 10),
+                                Text('Profile'),
                               ],
                             ),
                           ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Welcome,',
-                              style: GoogleFonts.roboto().copyWith(
-                                color: colorScheme.onSurface,
-                                fontWeight:FontWeight.bold,
-                                fontSize: 25,
-                              ),
+                          PopupMenuItem(
+                            value: 'theme',
+                            child: Row(
+                              children: const [
+                                Icon(Icons.brightness_4_outlined),
+                                SizedBox(width: 10),
+                                Text('Theme'),
+                              ],
                             ),
-                            Text(
-                              userName ?? '',
-                              style:GoogleFonts.roboto().copyWith(
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    PopupMenuButton(
-                      iconColor: colorScheme.onSurface,
-                      iconSize: 30,
-                      onSelected: (value) async {
-                        if (value == 'theme') {
-                          widget.toggleTheme();
-                        } else if (value == 'logout') {
-                          showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Confirm Logout'),
-      content: const Text('Are you sure you want to log out?'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () async {
-            Navigator.of(context).pop();
-
-            final storage = FlutterSecureStorage();
-            await storage.delete(key: 'authToken');
-
-            if (!context.mounted) return;
-
-            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-          },
-          child: const Text('Logout'),
-        ),
-      ],
-    ),
-  );
-                        } else if (value == 'profile') {
-                          Navigator.of(context).pushNamed('/profile');
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'profile',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.person),
-                              SizedBox(width: 10),
-                              Text('Profile'),
-                            ],
                           ),
-                        ),
-                        PopupMenuItem(
-                          value: 'theme',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.brightness_4_outlined),
-                              SizedBox(width: 10),
-                              Text('Theme'),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'logout',
-                          child: Row(
-                            children: const [
-                              Icon(Icons.logout_outlined),
-                              SizedBox(width: 10),
-                              Text('Logout'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: height * 0.05,
-                      width: width * 0.7,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: colorScheme.onSurface,),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Row(
-                        children: [
-                          Icon(Icons.search, color: colorScheme.onSurface),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Search event',
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface,
+                          PopupMenuItem(
+                            value: 'logout',
+                            child: Row(
+                              children: const [
+                                Icon(Icons.logout_outlined),
+                                SizedBox(width: 10),
+                                Text('Logout'),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Container(
-                      height: height * 0.05,
-                      width: height * 0.05,
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: colorScheme.onSurface),
-                      ),
-                      child: Icon(Icons.calendar_month, color: colorScheme.onSurface),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                await fetchEvents();
-              },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      height: height * 0.05,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(left: 25),
-                        itemCount: categoryNames.length,
-                        itemBuilder: (context, index) {
-                          final name = categoryNames[index];
-                          final isSelected = name == selectedCategory;
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedCategory = name;
-                              });
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.only(right: 10),
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              width:width * 0.27,
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? (isDark ? Colors.white : Colors.black)
-                                    : (isDark ? colorScheme.surface : Colors.white),
-                                border: Border.all(
-                                  color: isDark ? Colors.white : Colors.black,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                name,
-                                style: GoogleFonts.roboto().copyWith(
-                                  color: isSelected
-                                      ? (isDark ? Colors.black : Colors.white)
-                                      : (isDark ? Colors.white : Colors.black),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Container(
+                        height: height * 0.05,
+                        width: width * 0.9,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: colorScheme.onSurface),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Row(
+                          children: [
+                            Icon(Icons.search, color: colorScheme.onSurface),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Search event',
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurface,
                               ),
                             ),
-                          );
-                        },
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      alignment: Alignment.centerLeft,
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              height: height * 0.05,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.only(left: 25),
+                itemCount: categoryNames.length,
+                itemBuilder: (context, index) {
+                  final name = categoryNames[index];
+                  final isSelected = name == selectedCategory;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedCategory = name;
+                      });
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      width: width * 0.27,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? (theme.brightness == Brightness.dark ? Colors.white : Colors.black)
+                            : (theme.brightness == Brightness.dark ? colorScheme.surface : Colors.white),
+                        border: Border.all(
+                          color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: Text(
-                        'Upcoming Events',
+                        name,
                         style: GoogleFonts.roboto().copyWith(
-                          color: colorScheme.onSurface,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold
+                          color: isSelected
+                              ? (theme.brightness == Brightness.dark ? Colors.black : Colors.white)
+                              : (theme.brightness == Brightness.dark ? Colors.white : Colors.black),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
                         ),
                       ),
                     ),
-                    Column(
-                      children: filteredEvents
-                          .map((event) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: EventCardWidget(
-                          event: event,
-                          height: height,
-                          width: width,
-                        ),
-                      ))
-                          .toList(),
-                    ),
-                  ],
+                  );
+                },
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Upcoming Events',
+                style: GoogleFonts.roboto().copyWith(
+                  color: colorScheme.onSurface,
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: fetchEvents,
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: filteredEvents.length,
+                  itemBuilder: (context, index) {
+                    final event = filteredEvents[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: EventCardWidget(
+                        event: event,
+                        height: height,
+                        width: width,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-// EventCardWidget
 class EventCardWidget extends StatelessWidget {
   final Event event;
   final double height;
@@ -381,17 +371,13 @@ class EventCardWidget extends StatelessWidget {
     final textTheme = theme.textTheme;
     String fullImageUrl = '$baseUrl/storage/${event.imageUrl}';
 
-
     return Container(
       height: height * 0.45,
       width: width,
       margin: const EdgeInsets.symmetric(vertical: 10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: colorScheme.outline,
-          width: 2,
-        ),
+        border: Border.all(color: colorScheme.outline, width: 2),
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
@@ -434,14 +420,14 @@ class EventCardWidget extends StatelessWidget {
                       Text(
                         event.dateTime.day.toString(),
                         style: GoogleFonts.roboto().copyWith(
-                            color:Colors.black,
-                            fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w800,
                         ),
                       ),
                       Text(
                         _monthString(event.dateTime.month),
                         style: GoogleFonts.roboto().copyWith(
-                          color:Colors.black,
+                          color: Colors.black,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -457,7 +443,7 @@ class EventCardWidget extends StatelessWidget {
             style: GoogleFonts.roboto().copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
-              fontSize: 30
+              fontSize: 30,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -469,18 +455,14 @@ class EventCardWidget extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 event.venue,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
               ),
             ],
           ),
           const SizedBox(height: 6),
           Text(
             event.price,
-            style: textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onSurface,
-            ),
+            style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface),
           ),
           const Spacer(),
           SizedBox(
@@ -489,7 +471,9 @@ class EventCardWidget extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SelectedEvent(event: event)),
+                  MaterialPageRoute(
+                    builder: (context) => SelectedEvent(event: event),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(

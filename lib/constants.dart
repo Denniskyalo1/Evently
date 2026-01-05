@@ -7,7 +7,7 @@ class AppColors {
   static const Color highlight = Color.fromARGB(255,62,53,218);
 }
 
-const String baseUrl = 'https://134b-102-68-79-99.ngrok-free.app';
+const String baseUrl = 'https://4b1d8ee70aec.ngrok-free.app';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBackPressed;

@@ -482,7 +482,7 @@ class _BuyTicketState extends State<BuyTicket> {
                         : colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(width: 30),
+                /*const SizedBox(width: 30),
                 ChoiceChip(
                   label: Text("Credit/Debit Card"),
                   selected: _selectedMethod == PaymentMethod.card,
@@ -504,7 +504,7 @@ class _BuyTicketState extends State<BuyTicket> {
                         ? (isDark ? Colors.black : Colors.white)
                         : colorScheme.onSurface,
                   ),
-                ),
+                ),*/
               ],
             ),
             AnimatedSwitcher(

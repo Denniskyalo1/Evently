@@ -114,7 +114,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 name != null && name!.isNotEmpty
                     ? name![0].toUpperCase()
                     : '',
-                style: const TextStyle(fontSize: 40, color: Colors.white),
+                style: const TextStyle(
+                    fontSize: 40,
+                    color: Colors.white
+                ),
               ),
             ),
             const SizedBox(height: 20),

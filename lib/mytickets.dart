@@ -87,19 +87,19 @@ class _MyTicketsPageState extends State<MyTicketsPage> {
         ),
       );
 
-      // Request storage permission
+      /* Request storage permission
       var status = await Permission.storage.request();
       if (!status.isGranted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Storage permission is required to save PDF')),
         );
         return;
-      }
+      } */
 
       // Get directory to save
       final baseDir = await getExternalStorageDirectory();
-      final downloadsDir = Directory('/storage/emulated/0/Download');
-      final path = '${downloadsDir.path}/$safeFileName.pdf';
+      final directory = await getApplicationDocumentsDirectory();
+      final path = '${directory.path}/$safeFileName.pdf';
       final file = File(path);
 
 

@@ -287,7 +287,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       alignment: Alignment.center,
                       margin: const EdgeInsets.only(right: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 20
+                      ),
                       width: width * 0.27,
                       decoration: BoxDecoration(
                         color: isSelected
